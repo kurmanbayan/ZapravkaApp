@@ -57,15 +57,8 @@ class StationList(APIView):
         except City.DoesNotExist:
             raise Http404
     
-    def get_fuel_id(self, fuel):
-        try:
-            return Fuel.objects.get(name=fuel.lower()).id
-        except Fuel.DoesNotExist:
-            raise Http404
-
-    def get(self, request, city, fuel):
-        print(city.lower(), " ", fuel)
-        stations= Station.objects.filter(city_id=self.get_city_id(city), fuel_id=self.get_fuel_id(fuel))
+    def get(self, request, city, fuel_id):
+        stations= Station.objects.filter(city_id=self.get_city_id(city), fuel_id=fuel_id)
         ser = StationSerializer(stations, many=True)
         return Response(ser.data, status=status.HTTP_200_OK)
 
