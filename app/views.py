@@ -50,8 +50,8 @@ def city_detail(request, city_id):
 
 # class based view (CBV)
 class StationList(APIView):
-    def get(self, request):
-        stations = Station.objects.all()
+    def get(self, request, city_id, fuel_id):
+        stations= Station.objects.filter(city_id=city_id, fuel_id=fuel_id)
         ser = StationSerializer(stations, many=True)
         return Response(ser.data, status=status.HTTP_200_OK)
 
