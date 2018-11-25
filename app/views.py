@@ -1,3 +1,4 @@
+import math
 from django.http import Http404
 from .models import City, Station, Comment, Fuel
 from .serializers import CitySerializer, StationSerializer, CommentSerializer
@@ -132,14 +133,23 @@ class StationComment(APIView):
 
 @api_view(['POST'])
 def get_nearby_stations(request):
-    longitude = request.POST["longitude"]
-    latitude = request.POST["latitude"]
+    longitude = float(request.POST["longitude"])
+    latitude = float(request.POST["latitude"])
 
     stations = Station.objects.all()
-    ser = StationSerializer(stations, many=True)
-    # station_list = 
+    station_list = []
+    for station in stations:
+        dst = math.sqrt(pow(longitude - float(station.longitude), 2) + pow(latitude - float(station.latitude), 2))
+        station_list.append((dst, station))
+    station_list.sort()
+    
+    qlist = []
+    for (dst, station) in station_list[0:5]:
+        qlist.append(station)
 
-    return Response({"asd": "Asd"})
+    ser = StationSerializer(qlist, many=True)
+
+    return Response(ser.data)
     
 
 
