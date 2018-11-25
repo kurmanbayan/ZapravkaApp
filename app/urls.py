@@ -10,6 +10,8 @@ urlpatterns = [
     path('stations/<int:city_id>/<int:fuel_id>/', views.StationList.as_view(), name='station'),
 
     path('stations/<int:station_id>/', views.StationDetail.as_view()),
+    path('comments/', views.StationComment.as_view()),
+    path('comments/<int:station_id>/', views.StationComment.as_view())
     # path('auth/join/', views.user_register)
 
 ]

@@ -1,8 +1,8 @@
 
 from django.http import Http404
 
-from .models import City, Station
-from .serializers import CitySerializer, StationSerializer
+from .models import City, Station, Comment
+from .serializers import CitySerializer, StationSerializer, CommentSerializer
 from django.views.decorators.csrf import csrf_protect
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -13,6 +13,7 @@ from django.contrib.auth import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from rest_framework.authtoken.models import Token
 
 # function based view (FBV)
 @api_view(['GET', 'POST'])
@@ -87,6 +88,43 @@ class StationDetail(APIView):
         station = self.get_object(station_id)
         station.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class StationComment(APIView):
+    def get_user_info(self, user_id):
+        try:
+            return User.objects.get(id=user_id) 
+        except User.DoesNotExist:
+            raise Http404
+    
+    def get_station(self, station_id):
+        try:
+            return Station.objects.get(id=station_id) 
+        except Station.DoesNotExist:
+            raise Http404
+
+    def get(self, request):
+        comments = Comment.objects.all()
+        ser_com = CommentSerializer(comments, many=True)
+        return Response(ser_com.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, station_id):
+        user_id = request.POST["user_id"]
+        status = request.POST["status"]
+        body = request.POST["body"]
+        token = request.META['HTTP_TOKEN']
+        try:
+            if Token.objects.get(key=token).user.id == int(user_id):
+                Comment.objects.create(
+                    user = self.get_user_info(user_id),
+                    station = self.get_station(station_id),
+                    status = status,
+                    body = body
+                )
+                return Response({"message": "created"})
+        except Token.DoesNotExist:
+            raise Http404
+
+        return Response({"asd": "asd"})
 
 # function based view (FBV)
 
