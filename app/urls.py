@@ -11,7 +11,8 @@ urlpatterns = [
 
     path('stations/<int:station_id>/', views.StationDetail.as_view()),
     path('comments/<int:station_id>/', views.StationComment.as_view()),
-    path('stations/nearby/', views.get_nearby_stations)
+    path('stations/nearby/', views.get_nearby_stations),
+    path('features/', views.features)
     # path('auth/join/', views.user_register)
 
 ]

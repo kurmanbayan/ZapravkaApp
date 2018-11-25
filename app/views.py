@@ -1,7 +1,7 @@
 import math
 from django.http import Http404
-from .models import City, Station, Comment, Fuel
-from .serializers import CitySerializer, StationSerializer, CommentSerializer
+from .models import City, Station, Comment, Fuel, Feature
+from .serializers import CitySerializer, StationSerializer, CommentSerializer, FeatureSerializer
 from django.views.decorators.csrf import csrf_protect
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -150,6 +150,12 @@ def get_nearby_stations(request):
     ser = StationSerializer(qlist, many=True)
 
     return Response(ser.data)
+
+@api_view(['GET'])
+def features(request):
+    features = Feature.objects.all()
+    ser = FeatureSerializer(features, many=True)
+    return Response(ser.data, status=status.HTTP_200_OK)
     
 
 
