@@ -102,8 +102,8 @@ class StationComment(APIView):
         except Station.DoesNotExist:
             raise Http404
 
-    def get(self, request):
-        comments = Comment.objects.all()
+    def get(self, request, station_id):
+        comments = Comment.objects.filter(station = self.get_station(station_id))
         ser_com = CommentSerializer(comments, many=True)
         return Response(ser_com.data, status=status.HTTP_200_OK)
     
