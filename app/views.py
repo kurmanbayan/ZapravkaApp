@@ -1,6 +1,4 @@
-
 from django.http import Http404
-
 from .models import City, Station, Comment, Fuel
 from .serializers import CitySerializer, StationSerializer, CommentSerializer
 from django.views.decorators.csrf import csrf_protect
@@ -78,8 +76,8 @@ class StationDetail(APIView):
             raise Http404
 
     def get(self, request, station_id):
-        station = self.get_object(station_id)
-        serializer = StationSerializer(station)
+        stations = Station.objects.filter(id=station_id)
+        serializer = StationSerializer(stations, many=True)
         return Response(serializer.data)
 
     def put(self, request, station_id):
@@ -132,8 +130,17 @@ class StationComment(APIView):
 
         return Response({"asd": "asd"})
 
-# def get_nearby_stations(request):
+@api_view(['POST'])
+def get_nearby_stations(request):
+    longitude = request.POST["longitude"]
+    latitude = request.POST["latitude"]
 
+    stations = Station.objects.all()
+    ser = StationSerializer(stations, many=True)
+    # station_list = 
+
+    return Response({"asd": "Asd"})
+    
 
 
 # function based view (FBV)
