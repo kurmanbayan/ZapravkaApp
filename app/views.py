@@ -132,6 +132,8 @@ class StationComment(APIView):
 
         return Response({"asd": "asd"})
 
+# def get_nearby_stations(request):
+
 
 
 # function based view (FBV)
