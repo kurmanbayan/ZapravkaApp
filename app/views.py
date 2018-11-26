@@ -78,8 +78,20 @@ class StationDetail(APIView):
 
     def get(self, request, station_id):
         stations = Station.objects.filter(id=station_id)
-        serializer = StationSerializer(stations, many=True)
-        return Response(serializer.data)
+        fuels = []
+        for station in stations:
+            fuel = Fuel.objects.get(id=station.fuel_id.id)
+            fuels.append(
+                {
+                    "name": fuel.name,
+                    "price": fuel.price
+                }
+            )
+
+        serializer = StationSerializer(stations[0])
+        data = serializer.data
+        data["fuels"] = fuels
+        return Response(data)
 
     def put(self, request, station_id):
         station = self.get_object(station_id)
