@@ -13,14 +13,12 @@ class City(models.Model):
 
 class Fuel(models.Model):
 	name = models.CharField(max_length=100)
-	price = models.DecimalField(max_digits=6, decimal_places=3, blank=True, null=True)
 
 	def __str__(self):
 		return self.name
 
 class Station(models.Model):
 	city_id = models.ForeignKey(City, blank=True, default=None, on_delete=models.CASCADE)
-	fuel_id = models.ForeignKey(Fuel, blank=True, default=None, on_delete=models.CASCADE)
 	station_name = models.CharField(max_length=100)
 	rating = models.FloatField(default=0)
 	rating_counter = models.IntegerField(default=0)
@@ -36,6 +34,14 @@ class Station(models.Model):
 
 	def __str__(self):
 		return self.station_name
+
+class StationFuel(models.Model):
+	station = models.ForeignKey(Station, blank=True, default=None, on_delete=models.CASCADE)
+	price = models.DecimalField(max_digits=6, decimal_places=3, blank=True, null=True)
+	fuel = models.ForeignKey(Fuel, blank=True, default=None, on_delete=models.CASCADE)
+
+	def __str__(self):
+		return self.station.station_name
 
 class Feature(models.Model):
 	name = models.CharField(max_length=100)

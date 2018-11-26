@@ -1,7 +1,7 @@
 import math
 from django.http import Http404
-from .models import City, Station, Comment, Fuel, Feature
-from .serializers import CitySerializer, StationSerializer, CommentSerializer, FeatureSerializer
+from .models import City, Station, Comment, Fuel, Feature, StationFuel
+from .serializers import CitySerializer, StationSerializer, CommentSerializer, FeatureSerializer, StationFuelSerializer
 from django.views.decorators.csrf import csrf_protect
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -77,18 +77,20 @@ class StationDetail(APIView):
             raise Http404
 
     def get(self, request, station_id):
-        stations = Station.objects.filter(id=station_id)
+        stations = StationFuel.objects.all()
+
         fuels = []
         for station in stations:
-            fuel = Fuel.objects.get(id=station.fuel_id.id)
-            fuels.append(
-                {
-                    "name": fuel.name,
-                    "price": fuel.price
-                }
-            )
+            if station.station.id == station_id:
+                fuels.append(
+                    {
+                        "price": station.price,
+                        "fuel": Fuel.objects.get(id = station.fuel.id).name
+                    }
+                )
 
-        serializer = StationSerializer(stations[0])
+        station = Station.objects.get(id = stations[0].station.id)
+        serializer = StationSerializer(station)
         data = serializer.data
         data["fuels"] = fuels
         return Response(data)

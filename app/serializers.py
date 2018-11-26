@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import City, Station, Comment, Feature
+from .models import City, Station, Comment, Feature, StationFuel
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -22,4 +22,9 @@ class CommentSerializer(serializers.ModelSerializer):
 class FeatureSerializer(serializers.ModelSerializer):  
     class Meta:
         model = Feature
+        fields = "__all__"
+
+class StationFuelSerializer(serializers.ModelSerializer):  
+    class Meta:
+        model = StationFuel
         fields = "__all__"
