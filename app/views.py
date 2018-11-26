@@ -57,9 +57,18 @@ class StationList(APIView):
             raise Http404
     
     def get(self, request, city, fuel_id):
-        stations= Station.objects.filter(city_id=self.get_city_id(city), fuel_id=fuel_id)
-        ser = StationSerializer(stations, many=True)
-        return Response(ser.data, status=status.HTTP_200_OK)
+        city_id = City.objects.get(name=city.lower())
+        stations= StationFuel.objects.filter(fuel=fuel_id)
+        station_list = []
+        for sta in stations:
+            if sta.station.city_id == city_id:
+                station_ser = StationSerializer(sta.station)
+                data = station_ser.data
+                data["price"] = sta.price
+                station_list.append(
+                    data
+                )
+        return Response(station_list)
 
     def post(self, request):
         ser = StationSerializer(data=request.data)
